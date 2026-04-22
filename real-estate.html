@@ -1,0 +1,196 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Harlow Properties — Real Estate</title>
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,700;1,400&family=Jost:wght@300;400;500&display=swap" rel="stylesheet">
+<style>
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+:root{
+  --cream:#f5f0e8;--cream2:#ede7d9;
+  --brown:#2a1f14;--brown2:#3d2e1e;
+  --gold:#b8933a;--gold2:#d4a94a;
+  --text:#1a1410;--muted:#8a7d6e;
+  --border:rgba(184,147,58,0.2);
+}
+html{scroll-behavior:smooth}
+body{font-family:'Jost',sans-serif;background:var(--cream);color:var(--text);overflow-x:hidden}
+
+nav{position:fixed;top:0;left:0;right:0;z-index:100;padding:22px 60px;display:flex;align-items:center;justify-content:space-between;background:rgba(245,240,232,0.92);backdrop-filter:blur(16px);border-bottom:1px solid var(--border)}
+.nav-logo{font-family:'Playfair Display',serif;font-size:1.2rem;font-weight:400;letter-spacing:2px;color:var(--brown)}
+.nav-links{display:flex;gap:36px;list-style:none}
+.nav-links a{color:var(--muted);text-decoration:none;font-size:0.75rem;letter-spacing:3px;text-transform:uppercase;transition:color 0.2s}
+.nav-links a:hover{color:var(--gold)}
+.nav-cta{background:var(--brown);color:var(--cream);padding:11px 28px;font-size:0.7rem;letter-spacing:3px;text-transform:uppercase;text-decoration:none;transition:background 0.2s}
+.nav-cta:hover{background:var(--brown2)}
+
+/* HERO */
+.hero{min-height:100vh;display:grid;grid-template-columns:55% 45%;position:relative;padding-top:80px}
+.hero-left{padding:80px 60px 80px;display:flex;flex-direction:column;justify-content:center;background:var(--cream)}
+.hero-eyebrow{font-size:0.65rem;letter-spacing:6px;text-transform:uppercase;color:var(--gold);margin-bottom:20px}
+.hero h1{font-family:'Playfair Display',serif;font-size:clamp(3rem,5vw,5rem);font-weight:400;line-height:1.1;color:var(--brown);margin-bottom:24px}
+.hero h1 em{font-style:italic;color:var(--gold)}
+.hero-sub{font-size:0.95rem;font-weight:300;color:var(--muted);line-height:1.8;max-width:400px;margin-bottom:40px}
+.hero-actions{display:flex;gap:14px;align-items:center;flex-wrap:wrap}
+.btn-dark{background:var(--brown);color:var(--cream);padding:15px 36px;font-size:0.7rem;letter-spacing:4px;text-transform:uppercase;text-decoration:none;transition:background 0.2s,transform 0.2s}
+.btn-dark:hover{background:var(--brown2);transform:translateY(-2px)}
+.btn-link{color:var(--gold);font-size:0.75rem;letter-spacing:3px;text-transform:uppercase;text-decoration:none;display:flex;align-items:center;gap:8px;transition:gap 0.2s}
+.btn-link:hover{gap:14px}
+.hero-trust{display:flex;gap:32px;margin-top:56px;padding-top:32px;border-top:1px solid var(--border)}
+.trust-item{font-size:0.65rem;letter-spacing:3px;text-transform:uppercase;color:var(--muted)}
+.trust-item strong{display:block;font-family:'Playfair Display',serif;font-size:1.6rem;font-weight:400;color:var(--brown);letter-spacing:0;margin-bottom:4px}
+
+.hero-right{position:relative;overflow:hidden}
+.hero-right img{width:100%;height:100%;object-fit:cover}
+.hero-right::after{content:'';position:absolute;inset:0;background:linear-gradient(to right,var(--cream) 0%,transparent 20%)}
+.property-badge{position:absolute;bottom:40px;left:-20px;background:var(--cream);padding:20px 28px;box-shadow:0 20px 60px rgba(42,31,20,0.15);border-left:3px solid var(--gold);z-index:2}
+.property-badge .badge-price{font-family:'Playfair Display',serif;font-size:1.5rem;color:var(--brown)}
+.property-badge .badge-label{font-size:0.6rem;letter-spacing:3px;text-transform:uppercase;color:var(--muted);margin-top:2px}
+
+/* LISTINGS */
+.listings{padding:100px 60px;background:var(--cream2)}
+.section-header{display:flex;align-items:flex-end;justify-content:space-between;margin-bottom:50px}
+.section-header h2{font-family:'Playfair Display',serif;font-size:2.5rem;font-weight:400;color:var(--brown)}
+.section-header a{font-size:0.7rem;letter-spacing:3px;text-transform:uppercase;color:var(--gold);text-decoration:none}
+.listings-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(300px,1fr));gap:24px}
+.listing-card{background:var(--cream);overflow:hidden;transition:transform 0.3s,box-shadow 0.3s;cursor:pointer}
+.listing-card:hover{transform:translateY(-6px);box-shadow:0 24px 60px rgba(42,31,20,0.12)}
+.listing-img{height:220px;overflow:hidden;position:relative}
+.listing-img img{width:100%;height:100%;object-fit:cover;transition:transform 0.5s}
+.listing-card:hover .listing-img img{transform:scale(1.05)}
+.listing-tag{position:absolute;top:16px;left:16px;background:var(--brown);color:var(--cream);font-size:0.6rem;letter-spacing:3px;text-transform:uppercase;padding:5px 12px}
+.listing-body{padding:24px}
+.listing-price{font-family:'Playfair Display',serif;font-size:1.4rem;color:var(--brown);margin-bottom:6px}
+.listing-address{font-size:0.8rem;color:var(--muted);margin-bottom:14px}
+.listing-details{display:flex;gap:16px;font-size:0.7rem;letter-spacing:2px;text-transform:uppercase;color:var(--muted);border-top:1px solid var(--border);padding-top:14px}
+
+/* ABOUT */
+.about{padding:100px 60px;display:grid;grid-template-columns:1fr 1fr;gap:80px;align-items:center;max-width:1200px;margin:auto}
+.about-img{position:relative}
+.about-img img{width:100%;aspect-ratio:4/5;object-fit:cover}
+.about-img::before{content:'';position:absolute;top:-16px;left:-16px;right:16px;bottom:16px;border:2px solid var(--border);z-index:-1}
+.about-content h2{font-family:'Playfair Display',serif;font-size:2.5rem;font-weight:400;color:var(--brown);margin-bottom:20px;line-height:1.2}
+.about-content p{font-size:0.9rem;color:var(--muted);line-height:1.8;margin-bottom:16px}
+
+/* CTA */
+.cta-section{background:var(--brown);padding:100px 60px;text-align:center}
+.cta-section h2{font-family:'Playfair Display',serif;font-size:clamp(2rem,4vw,3.5rem);font-weight:400;color:var(--cream);margin-bottom:16px;line-height:1.2}
+.cta-section h2 em{font-style:italic;color:var(--gold2)}
+.cta-section p{color:rgba(245,240,232,0.6);font-size:0.9rem;margin-bottom:36px;max-width:460px;margin-left:auto;margin-right:auto}
+.btn-cream{background:var(--cream);color:var(--brown);padding:16px 40px;font-size:0.7rem;letter-spacing:4px;text-transform:uppercase;text-decoration:none;transition:background 0.2s,transform 0.2s;display:inline-block}
+.btn-cream:hover{background:var(--cream2);transform:translateY(-2px)}
+
+footer{background:#1a1410;padding:36px 60px;display:flex;align-items:center;justify-content:space-between;flex-wrap:gap}
+.footer-logo{font-family:'Playfair Display',serif;font-size:1.1rem;color:var(--cream2)}
+.footer-credit{font-size:0.6rem;letter-spacing:2px;text-transform:uppercase;color:#555}
+.footer-credit a{color:var(--gold);text-decoration:none}
+.footer-credit a:hover{color:var(--gold2)}
+
+@keyframes fadeUp{from{opacity:0;transform:translateY(24px)}to{opacity:1;transform:translateY(0)}}
+.hero-left>*{animation:fadeUp 0.8s ease both}
+.hero-eyebrow{animation-delay:0.1s}.hero h1{animation-delay:0.25s}.hero-sub{animation-delay:0.4s}.hero-actions{animation-delay:0.55s}.hero-trust{animation-delay:0.7s}
+
+@media(max-width:900px){
+  .hero{grid-template-columns:1fr}.hero-right{display:none}
+  .hero-left{padding:100px 24px 60px}
+  nav{padding:18px 24px}.nav-links{display:none}
+  .listings{padding:60px 24px}.about{padding:60px 24px;grid-template-columns:1fr}.about-img{display:none}
+  .cta-section{padding:60px 24px}
+  footer{padding:30px 24px;flex-direction:column;gap:12px;text-align:center}
+}
+</style>
+</head>
+<body>
+
+<nav>
+  <div class="nav-logo">Harlow Properties</div>
+  <ul class="nav-links">
+    <li><a href="#">Listings</a></li>
+    <li><a href="#">Buy</a></li>
+    <li><a href="#">Sell</a></li>
+    <li><a href="#">About</a></li>
+  </ul>
+  <a href="#" class="nav-cta">Book a Call</a>
+</nav>
+
+<section class="hero">
+  <div class="hero-left">
+    <div class="hero-eyebrow">Luxury Real Estate</div>
+    <h1>Find Your<br><em>Dream</em><br>Home</h1>
+    <p class="hero-sub">Expert guidance through every step of your property journey — from first showing to final signing. Let's find the home you deserve.</p>
+    <div class="hero-actions">
+      <a href="#" class="btn-dark">View Listings</a>
+      <a href="#" class="btn-link">Free Valuation →</a>
+    </div>
+    <div class="hero-trust">
+      <div class="trust-item"><strong>12yr</strong>Experience</div>
+      <div class="trust-item"><strong>340+</strong>Homes Sold</div>
+      <div class="trust-item"><strong>$98M+</strong>In Sales</div>
+    </div>
+  </div>
+  <div class="hero-right">
+    <img src="https://images.unsplash.com/photo-1600585154340-be6161a56a0c?w=900&q=80" alt="Luxury Home">
+    <div class="property-badge">
+      <div class="badge-price">$1,250,000</div>
+      <div class="badge-label">Featured Listing</div>
+    </div>
+  </div>
+</section>
+
+<section class="listings">
+  <div class="section-header">
+    <h2>Featured Listings</h2>
+    <a href="#">View All →</a>
+  </div>
+  <div class="listings-grid">
+    <div class="listing-card">
+      <div class="listing-img"><img src="https://images.unsplash.com/photo-1568605114967-8130f3a36994?w=600&q=80" alt="Home"><span class="listing-tag">For Sale</span></div>
+      <div class="listing-body">
+        <div class="listing-price">$875,000</div>
+        <div class="listing-address">42 Maple Drive, Westlake</div>
+        <div class="listing-details"><span>4 Beds</span><span>3 Baths</span><span>2,400 sqft</span></div>
+      </div>
+    </div>
+    <div class="listing-card">
+      <div class="listing-img"><img src="https://images.unsplash.com/photo-1570129477492-45c003edd2be?w=600&q=80" alt="Home"><span class="listing-tag">New</span></div>
+      <div class="listing-body">
+        <div class="listing-price">$1,100,000</div>
+        <div class="listing-address">18 Elmwood Court, Ridgeway</div>
+        <div class="listing-details"><span>5 Beds</span><span>4 Baths</span><span>3,100 sqft</span></div>
+      </div>
+    </div>
+    <div class="listing-card">
+      <div class="listing-img"><img src="https://images.unsplash.com/photo-1558618666-fcd25c85cd64?w=600&q=80" alt="Home"><span class="listing-tag">For Sale</span></div>
+      <div class="listing-body">
+        <div class="listing-price">$650,000</div>
+        <div class="listing-address">9 Birchwood Lane, Hillcrest</div>
+        <div class="listing-details"><span>3 Beds</span><span>2 Baths</span><span>1,800 sqft</span></div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section class="about" id="about">
+  <div class="about-img"><img src="https://images.unsplash.com/photo-1560250097-0b93528c311a?w=600&q=80" alt="Agent"></div>
+  <div class="about-content">
+    <h2>Trusted Expertise in Every Transaction</h2>
+    <p>With over 12 years in the local market, I bring deep neighborhood knowledge and sharp negotiation skills to every deal — whether you're buying your first home or selling a luxury property.</p>
+    <p>My approach is simple: listen first, then deliver results that exceed expectations.</p>
+    <a href="#" class="btn-dark" style="display:inline-block;margin-top:24px">Meet the Agent</a>
+  </div>
+</section>
+
+<section class="cta-section">
+  <h2>Ready to Make<br>Your <em>Move?</em></h2>
+  <p>Book a free, no-obligation consultation and let's talk about your real estate goals.</p>
+  <a href="#" class="btn-cream">Schedule a Consultation</a>
+</section>
+
+<footer>
+  <div class="footer-logo">Harlow Properties</div>
+  <p class="footer-credit">Website by <a href="#">Lanzsocial</a></p>
+</footer>
+
+</body>
+</html>

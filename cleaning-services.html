@@ -1,0 +1,179 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Sparkle Clean — Professional Cleaning</title>
+<link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;700;800&display=swap" rel="stylesheet">
+<style>
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+:root{
+  --teal:#00897b;--teal2:#00bfa5;--teal-light:#e0f5f2;
+  --bg:#ffffff;--bg2:#f7fffe;
+  --text:#0d2620;--muted:#6b8c87;
+  --border:#d4ecea;
+}
+html{scroll-behavior:smooth}
+body{font-family:'Plus Jakarta Sans',sans-serif;background:var(--bg);color:var(--text);overflow-x:hidden}
+
+nav{position:fixed;top:0;left:0;right:0;z-index:100;padding:18px 60px;display:flex;align-items:center;justify-content:space-between;background:rgba(255,255,255,0.95);backdrop-filter:blur(16px);border-bottom:1px solid var(--border);box-shadow:0 1px 0 var(--border)}
+.nav-logo{font-weight:800;font-size:1.2rem;color:var(--teal);letter-spacing:-0.5px}
+.nav-logo span{color:var(--text)}
+.nav-links{display:flex;gap:32px;list-style:none}
+.nav-links a{color:var(--muted);text-decoration:none;font-size:0.8rem;font-weight:500;transition:color 0.2s}
+.nav-links a:hover{color:var(--teal)}
+.nav-cta{background:var(--teal);color:#fff;padding:10px 26px;font-size:0.8rem;font-weight:700;text-decoration:none;border-radius:50px;transition:background 0.2s,transform 0.2s}
+.nav-cta:hover{background:var(--teal2);transform:translateY(-1px)}
+
+/* HERO */
+.hero{min-height:100vh;display:flex;align-items:center;padding:120px 60px 80px;position:relative;overflow:hidden;background:linear-gradient(135deg,#f0fffe 0%,var(--bg) 60%)}
+.hero-blob{position:absolute;top:-200px;right:-200px;width:700px;height:700px;background:radial-gradient(circle,rgba(0,191,165,0.12) 0%,transparent 70%);border-radius:50%}
+.hero-blob2{position:absolute;bottom:-100px;left:-100px;width:400px;height:400px;background:radial-gradient(circle,rgba(0,137,123,0.08) 0%,transparent 70%);border-radius:50%}
+.hero-inner{max-width:1100px;margin:auto;display:grid;grid-template-columns:1fr 1fr;gap:80px;align-items:center;position:relative;z-index:1;width:100%}
+.hero-badge{display:inline-flex;align-items:center;gap:8px;background:var(--teal-light);color:var(--teal);padding:6px 16px;border-radius:50px;font-size:0.7rem;font-weight:700;letter-spacing:1px;text-transform:uppercase;margin-bottom:24px}
+.hero-badge::before{content:'✓';background:var(--teal);color:#fff;width:18px;height:18px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:0.65rem}
+.hero h1{font-size:clamp(2.5rem,4.5vw,4rem);font-weight:800;line-height:1.05;color:var(--text);margin-bottom:20px;letter-spacing:-1.5px}
+.hero h1 span{color:var(--teal)}
+.hero-sub{font-size:1rem;font-weight:300;color:var(--muted);line-height:1.8;margin-bottom:36px;max-width:460px}
+.hero-form{background:var(--bg);border:2px solid var(--border);border-radius:16px;padding:28px;box-shadow:0 8px 40px rgba(0,137,123,0.08)}
+.hero-form h3{font-size:1rem;font-weight:700;margin-bottom:6px;color:var(--text)}
+.hero-form p{font-size:0.8rem;color:var(--muted);margin-bottom:20px}
+.form-group{margin-bottom:12px}
+.form-group input,.form-group select{width:100%;border:1.5px solid var(--border);border-radius:10px;padding:12px 16px;font-family:'Plus Jakarta Sans',sans-serif;font-size:0.85rem;color:var(--text);background:var(--bg2);outline:none;transition:border-color 0.2s}
+.form-group input:focus,.form-group select:focus{border-color:var(--teal)}
+.btn-submit{width:100%;background:var(--teal);color:#fff;border:none;border-radius:10px;padding:14px;font-family:'Plus Jakarta Sans',sans-serif;font-size:0.9rem;font-weight:700;cursor:pointer;transition:background 0.2s,transform 0.2s}
+.btn-submit:hover{background:var(--teal2);transform:translateY(-1px)}
+.hero-right{position:relative}
+.hero-main-img{width:100%;border-radius:20px;object-fit:cover;aspect-ratio:4/5;box-shadow:0 30px 80px rgba(0,137,123,0.15)}
+.floating-card{position:absolute;background:var(--bg);border-radius:14px;padding:16px 20px;box-shadow:0 16px 40px rgba(0,0,0,0.1);border:1px solid var(--border)}
+.fc-top{top:30px;right:-20px;display:flex;align-items:center;gap:12px}
+.fc-top .icon{width:40px;height:40px;background:var(--teal-light);border-radius:10px;display:flex;align-items:center;justify-content:center;font-size:1.2rem}
+.fc-top .fc-text strong{display:block;font-size:0.85rem;font-weight:700;color:var(--text)}
+.fc-top .fc-text span{font-size:0.7rem;color:var(--muted)}
+.fc-bottom{bottom:40px;left:-20px;text-align:center}
+.fc-bottom .stars{font-size:0.9rem;margin-bottom:4px}
+.fc-bottom strong{display:block;font-size:0.8rem;font-weight:700;color:var(--text)}
+.fc-bottom span{font-size:0.7rem;color:var(--muted)}
+
+/* SERVICES */
+.services{padding:100px 60px;max-width:1100px;margin:auto}
+.section-tag{font-size:0.65rem;font-weight:700;letter-spacing:4px;text-transform:uppercase;color:var(--teal);margin-bottom:12px}
+.section-title{font-size:clamp(2rem,3.5vw,2.8rem);font-weight:800;letter-spacing:-1px;color:var(--text);margin-bottom:50px}
+.services-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(240px,1fr));gap:20px}
+.service-card{border:1.5px solid var(--border);border-radius:16px;padding:32px 28px;transition:transform 0.3s,border-color 0.3s,box-shadow 0.3s;cursor:pointer}
+.service-card:hover{transform:translateY(-6px);border-color:var(--teal);box-shadow:0 16px 40px rgba(0,137,123,0.1)}
+.service-card .svc-icon{width:52px;height:52px;background:var(--teal-light);border-radius:14px;display:flex;align-items:center;justify-content:center;font-size:1.5rem;margin-bottom:20px}
+.service-card h3{font-size:1rem;font-weight:700;margin-bottom:10px;color:var(--text)}
+.service-card p{font-size:0.82rem;color:var(--muted);line-height:1.7}
+.service-card .price{margin-top:16px;font-size:0.75rem;font-weight:700;color:var(--teal)}
+
+/* HOW IT WORKS */
+.how{background:var(--teal);padding:100px 60px;color:#fff}
+.how-inner{max-width:1100px;margin:auto}
+.how .section-tag{color:rgba(255,255,255,0.6)}
+.how .section-title{color:#fff;margin-bottom:60px}
+.steps{display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:32px}
+.step{position:relative;padding-left:60px}
+.step-num{position:absolute;left:0;top:0;width:40px;height:40px;background:rgba(255,255,255,0.15);border-radius:10px;display:flex;align-items:center;justify-content:center;font-weight:800;font-size:0.9rem}
+.step h3{font-size:1rem;font-weight:700;margin-bottom:8px}
+.step p{font-size:0.82rem;color:rgba(255,255,255,0.7);line-height:1.7}
+.step-line{display:none}
+
+/* CTA */
+.cta-section{padding:120px 60px;text-align:center;background:linear-gradient(180deg,#f0fffe 0%,#fff 100%)}
+.cta-section h2{font-size:clamp(2rem,4vw,3.5rem);font-weight:800;letter-spacing:-1.5px;color:var(--text);margin-bottom:16px}
+.cta-section h2 span{color:var(--teal)}
+.cta-section p{color:var(--muted);font-size:0.95rem;margin-bottom:36px;max-width:460px;margin-left:auto;margin-right:auto}
+.btn-teal{background:var(--teal);color:#fff;padding:16px 44px;font-size:0.9rem;font-weight:700;text-decoration:none;border-radius:50px;display:inline-block;transition:background 0.2s,transform 0.2s;box-shadow:0 8px 24px rgba(0,137,123,0.3)}
+.btn-teal:hover{background:var(--teal2);transform:translateY(-2px)}
+
+footer{background:var(--text);padding:36px 60px;display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:12px}
+.footer-logo{font-weight:800;font-size:1.1rem;color:#fff}
+.footer-logo span{color:var(--teal2)}
+.footer-credit{font-size:0.65rem;letter-spacing:2px;text-transform:uppercase;color:#555}
+.footer-credit a{color:var(--teal2);text-decoration:none}
+
+@keyframes fadeUp{from{opacity:0;transform:translateY(24px)}to{opacity:1;transform:translateY(0)}}
+.hero-left>*{animation:fadeUp 0.8s ease both}
+.hero-badge{animation-delay:0.1s}.hero h1{animation-delay:0.2s}.hero-sub{animation-delay:0.35s}
+
+@media(max-width:900px){
+  nav{padding:16px 24px}.nav-links{display:none}
+  .hero{padding:100px 24px 60px}.hero-inner{grid-template-columns:1fr}.hero-right{display:none}
+  .services{padding:60px 24px}.how{padding:60px 24px}.cta-section{padding:80px 24px}
+  footer{padding:30px 24px;justify-content:center}
+}
+</style>
+</head>
+<body>
+
+<nav>
+  <div class="nav-logo">Sparkle<span>Clean</span></div>
+  <ul class="nav-links">
+    <li><a href="#">Services</a></li>
+    <li><a href="#">Pricing</a></li>
+    <li><a href="#">Reviews</a></li>
+    <li><a href="#">Contact</a></li>
+  </ul>
+  <a href="#" class="nav-cta">Get a Quote</a>
+</nav>
+
+<section class="hero">
+  <div class="hero-blob"></div><div class="hero-blob2"></div>
+  <div class="hero-inner">
+    <div class="hero-left">
+      <div class="hero-badge">Trusted by 1,200+ Homes</div>
+      <h1>Your Home,<br><span>Spotlessly</span><br>Clean.</h1>
+      <p class="hero-sub">Professional, eco-friendly cleaning services you can trust. We show up on time, every time — and leave your space gleaming.</p>
+    </div>
+    <div class="hero-right">
+      <img class="hero-main-img" src="https://images.unsplash.com/photo-1581578731548-c64695cc6952?w=800&q=80" alt="Cleaning">
+      <div class="floating-card fc-top">
+        <div class="icon">✅</div>
+        <div class="fc-text"><strong>Booking Confirmed</strong><span>Today at 10:00 AM</span></div>
+      </div>
+      <div class="floating-card fc-bottom">
+        <div class="stars">⭐⭐⭐⭐⭐</div>
+        <strong>4.9 / 5.0 Rating</strong>
+        <span>Based on 680 reviews</span>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section class="services">
+  <div class="section-tag">Our Services</div>
+  <h2 class="section-title">Every Space We Clean</h2>
+  <div class="services-grid">
+    <div class="service-card"><div class="svc-icon">🏠</div><h3>Home Cleaning</h3><p>Deep cleaning for every room — kitchens, bathrooms, bedrooms, and living areas.</p><div class="price">From $80</div></div>
+    <div class="service-card"><div class="svc-icon">🏢</div><h3>Office Cleaning</h3><p>Keep your workspace productive and hygienic with regular commercial cleaning.</p><div class="price">From $120</div></div>
+    <div class="service-card"><div class="svc-icon">🛠️</div><h3>Move-In / Out</h3><p>Full deep-clean when moving in or out — ready for new occupants.</p><div class="price">From $150</div></div>
+    <div class="service-card"><div class="svc-icon">🌿</div><h3>Eco-Friendly</h3><p>All-natural, non-toxic products safe for kids, pets, and the environment.</p><div class="price">Add-on available</div></div>
+  </div>
+</section>
+
+<section class="how">
+  <div class="how-inner">
+    <div class="section-tag">How It Works</div>
+    <h2 class="section-title">3 Simple Steps</h2>
+    <div class="steps">
+      <div class="step"><div class="step-num">1</div><h3>Book Online</h3><p>Choose your service, date, and time in under 2 minutes.</p></div>
+      <div class="step"><div class="step-num">2</div><h3>We Arrive</h3><p>Our vetted, insured team shows up fully equipped and on time.</p></div>
+      <div class="step"><div class="step-num">3</div><h3>Enjoy the Clean</h3><p>Come home to a spotless space. 100% satisfaction guaranteed.</p></div>
+    </div>
+  </div>
+</section>
+
+<section class="cta-section">
+  <h2>Ready for a <span>Cleaner</span> Home?</h2>
+  <p>Book in minutes. No contracts. Cancel anytime. First clean 15% off.</p>
+  <a href="#" class="btn-teal">Book Your First Clean</a>
+</section>
+
+<footer>
+  <div class="footer-logo">Sparkle<span>Clean</span></div>
+  <p class="footer-credit">Website by <a href="#">Lanzsocial</a></p>
+</footer>
+
+</body>
+</html>
