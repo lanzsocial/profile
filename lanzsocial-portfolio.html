@@ -1,0 +1,801 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>LanzSocial — Digital Creative & Developer</title>
+  <link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=DM+Serif+Display:ital@0;1&family=DM+Sans:wght@300;400;500&display=swap" rel="stylesheet"/>
+  <style>
+    *, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; }
+
+    :root {
+      --black:   #0a0a0a;
+      --offwhite:#f2ede6;
+      --cream:   #e8e0d2;
+      --gold:    #c9a84c;
+      --gold2:   #f0d080;
+      --rust:    #b54a2a;
+      --mid:     #1e1c19;
+      --text:    #f2ede6;
+      --muted:   #7a7468;
+    }
+
+    html { scroll-behavior: smooth; }
+
+    body {
+      background: var(--black);
+      color: var(--text);
+      font-family: 'DM Sans', sans-serif;
+      font-weight: 300;
+      overflow-x: hidden;
+      cursor: none;
+    }
+
+    /* ── CURSOR ── */
+    .cursor {
+      position: fixed; z-index: 9999; pointer-events: none;
+      width: 12px; height: 12px;
+      background: var(--gold);
+      border-radius: 50%;
+      transform: translate(-50%,-50%);
+      transition: transform .12s ease, width .2s ease, height .2s ease, background .2s;
+    }
+    .cursor-ring {
+      position: fixed; z-index: 9998; pointer-events: none;
+      width: 36px; height: 36px;
+      border: 1px solid rgba(201,168,76,.5);
+      border-radius: 50%;
+      transform: translate(-50%,-50%);
+      transition: transform .25s ease, width .25s ease, height .25s ease;
+    }
+    body:hover .cursor { opacity: 1; }
+
+    /* ── NOISE OVERLAY ── */
+    body::before {
+      content:''; position: fixed; inset: 0; z-index: 1000; pointer-events: none;
+      background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noise)' opacity='0.035'/%3E%3C/svg%3E");
+      opacity: .55;
+    }
+
+    /* ── NAV ── */
+    nav {
+      position: fixed; top: 0; left: 0; right: 0; z-index: 500;
+      display: flex; align-items: center; justify-content: space-between;
+      padding: 1.4rem 4vw;
+      background: linear-gradient(to bottom, rgba(10,10,10,.9) 0%, transparent 100%);
+      backdrop-filter: blur(0px);
+    }
+    .nav-logo {
+      font-family: 'Bebas Neue', sans-serif;
+      font-size: clamp(1.4rem, 2.5vw, 1.8rem);
+      letter-spacing: .15em;
+      color: var(--gold);
+      text-decoration: none;
+    }
+    .nav-links { display: flex; gap: 2.5rem; list-style: none; }
+    .nav-links a {
+      font-size: .78rem; letter-spacing: .12em; text-transform: uppercase;
+      color: var(--cream); text-decoration: none;
+      position: relative; transition: color .3s;
+    }
+    .nav-links a::after {
+      content:''; position: absolute; bottom: -3px; left: 0;
+      width: 0; height: 1px; background: var(--gold);
+      transition: width .3s ease;
+    }
+    .nav-links a:hover { color: var(--gold); }
+    .nav-links a:hover::after { width: 100%; }
+
+    .nav-hamburger { display: none; flex-direction: column; gap: 5px; cursor: pointer; padding: 4px; }
+    .nav-hamburger span { display: block; width: 24px; height: 1.5px; background: var(--cream); transition: .3s; }
+
+    /* ── HERO ── */
+    #hero {
+      min-height: 100svh;
+      display: grid; place-items: center;
+      position: relative; overflow: hidden;
+      padding: 8rem 4vw 4rem;
+    }
+
+    .hero-bg {
+      position: absolute; inset: 0; z-index: 0;
+      background:
+        radial-gradient(ellipse 80% 60% at 60% 40%, rgba(201,168,76,.07) 0%, transparent 60%),
+        radial-gradient(ellipse 50% 50% at 20% 80%, rgba(181,74,42,.06) 0%, transparent 55%),
+        linear-gradient(160deg, #0a0a0a 0%, #131210 100%);
+    }
+
+    .hero-grid-lines {
+      position: absolute; inset: 0; z-index: 0; opacity: .06;
+      background-image:
+        linear-gradient(var(--gold) 1px, transparent 1px),
+        linear-gradient(90deg, var(--gold) 1px, transparent 1px);
+      background-size: 80px 80px;
+    }
+
+    .hero-content { position: relative; z-index: 2; max-width: 900px; width: 100%; }
+
+    .hero-eyebrow {
+      display: inline-flex; align-items: center; gap: .75rem;
+      font-size: .72rem; letter-spacing: .2em; text-transform: uppercase;
+      color: var(--gold); margin-bottom: 1.5rem;
+      opacity: 0; animation: fadeUp .8s .2s forwards;
+    }
+    .hero-eyebrow::before {
+      content:''; display: block; width: 36px; height: 1px; background: var(--gold);
+    }
+
+    h1.hero-name {
+      font-family: 'Bebas Neue', sans-serif;
+      font-size: clamp(4.5rem, 14vw, 11rem);
+      line-height: .92;
+      letter-spacing: .02em;
+      color: var(--offwhite);
+      opacity: 0; animation: fadeUp .9s .35s forwards;
+    }
+    h1.hero-name span { color: var(--gold); }
+
+    .hero-tagline {
+      font-family: 'DM Serif Display', serif;
+      font-style: italic;
+      font-size: clamp(1.1rem, 2.5vw, 1.5rem);
+      color: var(--muted);
+      margin: 1.2rem 0 2.5rem;
+      opacity: 0; animation: fadeUp .9s .5s forwards;
+    }
+
+    .hero-tags {
+      display: flex; flex-wrap: wrap; gap: .6rem;
+      opacity: 0; animation: fadeUp .9s .65s forwards;
+    }
+    .tag {
+      font-size: .72rem; letter-spacing: .1em; text-transform: uppercase;
+      padding: .45rem 1rem; border: 1px solid rgba(201,168,76,.3);
+      color: var(--cream); border-radius: 2px;
+      background: rgba(201,168,76,.05);
+      transition: background .25s, border-color .25s;
+    }
+    .tag:hover { background: rgba(201,168,76,.12); border-color: var(--gold); }
+
+    .hero-cta {
+      display: inline-flex; align-items: center; gap: .8rem;
+      margin-top: 2.8rem;
+      font-size: .78rem; letter-spacing: .15em; text-transform: uppercase;
+      color: var(--black);
+      background: var(--gold);
+      padding: .9rem 2rem; text-decoration: none; border-radius: 2px;
+      transition: background .25s, transform .2s;
+      opacity: 0; animation: fadeUp .9s .8s forwards;
+    }
+    .hero-cta:hover { background: var(--gold2); transform: translateY(-2px); }
+    .hero-cta svg { flex-shrink: 0; }
+
+    .hero-scroll {
+      position: absolute; bottom: 2.5rem; left: 50%; transform: translateX(-50%);
+      display: flex; flex-direction: column; align-items: center; gap: .5rem;
+      font-size: .65rem; letter-spacing: .18em; text-transform: uppercase;
+      color: var(--muted); z-index: 2;
+      animation: bounce 2s 1.5s infinite;
+    }
+    .hero-scroll::after {
+      content:''; display: block; width: 1px; height: 48px;
+      background: linear-gradient(to bottom, var(--gold), transparent);
+    }
+
+    /* ── SECTION BASE ── */
+    section { padding: clamp(4rem, 10vw, 8rem) 4vw; position: relative; }
+
+    .section-label {
+      font-size: .65rem; letter-spacing: .25em; text-transform: uppercase;
+      color: var(--gold); margin-bottom: 1rem;
+      display: flex; align-items: center; gap: .75rem;
+    }
+    .section-label::after { content:''; flex: 1; height: 1px; background: rgba(201,168,76,.25); max-width: 80px; }
+
+    h2.section-title {
+      font-family: 'DM Serif Display', serif;
+      font-size: clamp(2rem, 5vw, 3.2rem);
+      line-height: 1.1; color: var(--offwhite);
+      margin-bottom: 1rem;
+    }
+    h2.section-title em { color: var(--gold); font-style: italic; }
+
+    .section-sub {
+      font-size: clamp(.9rem, 1.5vw, 1rem);
+      color: var(--muted); max-width: 520px; line-height: 1.7;
+    }
+
+    /* ── ABOUT ── */
+    #about { background: var(--mid); }
+    .about-grid {
+      display: grid; grid-template-columns: 1fr 1fr;
+      gap: 4rem; align-items: center; margin-top: 3.5rem;
+    }
+    .about-text p { color: var(--cream); line-height: 1.8; font-size: .95rem; margin-bottom: 1.2rem; }
+    .about-stats {
+      display: grid; grid-template-columns: 1fr 1fr;
+      gap: 1.5rem;
+    }
+    .stat-box {
+      border: 1px solid rgba(201,168,76,.2);
+      padding: 1.6rem; border-radius: 4px;
+      background: rgba(201,168,76,.03);
+      transition: border-color .25s, background .25s;
+    }
+    .stat-box:hover { border-color: var(--gold); background: rgba(201,168,76,.07); }
+    .stat-num {
+      font-family: 'Bebas Neue', sans-serif;
+      font-size: 3rem; color: var(--gold); line-height: 1;
+    }
+    .stat-label { font-size: .72rem; letter-spacing: .1em; text-transform: uppercase; color: var(--muted); margin-top: .3rem; }
+
+    /* ── SKILLS ── */
+    #skills { background: var(--black); }
+    .skills-grid {
+      display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+      gap: 1.5px; margin-top: 3.5rem;
+      border: 1.5px solid rgba(201,168,76,.12);
+    }
+    .skill-card {
+      padding: 2.5rem 2rem;
+      background: var(--black);
+      border: 1.5px solid rgba(201,168,76,.08);
+      position: relative; overflow: hidden;
+      transition: background .3s;
+    }
+    .skill-card::before {
+      content:''; position: absolute; inset: 0;
+      background: linear-gradient(135deg, rgba(201,168,76,.06) 0%, transparent 60%);
+      opacity: 0; transition: opacity .35s;
+    }
+    .skill-card:hover { background: #111009; }
+    .skill-card:hover::before { opacity: 1; }
+    .skill-icon {
+      font-size: 2rem; margin-bottom: 1.2rem;
+      display: flex; align-items: center; justify-content: center;
+      width: 52px; height: 52px;
+      border: 1px solid rgba(201,168,76,.25);
+      border-radius: 50%; color: var(--gold);
+      transition: border-color .3s, background .3s;
+    }
+    .skill-card:hover .skill-icon { border-color: var(--gold); background: rgba(201,168,76,.1); }
+    .skill-name {
+      font-family: 'DM Serif Display', serif;
+      font-size: 1.25rem; color: var(--offwhite); margin-bottom: .6rem;
+    }
+    .skill-desc { font-size: .85rem; color: var(--muted); line-height: 1.65; }
+
+    .skill-items {
+      display: flex; flex-wrap: wrap; gap: .4rem; margin-top: 1.2rem;
+    }
+    .skill-item {
+      font-size: .65rem; letter-spacing: .08em; text-transform: uppercase;
+      padding: .3rem .7rem; border: 1px solid rgba(201,168,76,.2);
+      color: var(--gold); border-radius: 2px;
+    }
+
+    /* ── BAR SKILLS ── */
+    .bar-skills { margin-top: 3.5rem; max-width: 700px; }
+    .bar-row { margin-bottom: 1.6rem; }
+    .bar-label {
+      display: flex; justify-content: space-between;
+      font-size: .75rem; letter-spacing: .1em; text-transform: uppercase;
+      color: var(--cream); margin-bottom: .6rem;
+    }
+    .bar-track {
+      height: 3px; background: rgba(201,168,76,.12); border-radius: 2px; overflow: hidden;
+    }
+    .bar-fill {
+      height: 100%; background: linear-gradient(90deg, var(--rust), var(--gold));
+      border-radius: 2px; width: 0;
+      transition: width 1.4s cubic-bezier(.22,1,.36,1);
+    }
+
+    /* ── PORTFOLIO ── */
+    #portfolio { background: var(--mid); }
+    .portfolio-grid {
+      display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+      gap: 1.5rem; margin-top: 3.5rem;
+    }
+    .portfolio-card {
+      border-radius: 4px; overflow: hidden;
+      border: 1px solid rgba(201,168,76,.1);
+      background: var(--black);
+      transition: transform .3s, box-shadow .3s;
+      position: relative;
+    }
+    .portfolio-card:hover { transform: translateY(-6px); box-shadow: 0 20px 50px rgba(0,0,0,.5); }
+    .portfolio-img {
+      height: 200px; position: relative; overflow: hidden;
+      display: flex; align-items: center; justify-content: center;
+    }
+    .portfolio-img .img-bg {
+      position: absolute; inset: 0;
+      transition: transform .5s ease;
+    }
+    .portfolio-card:hover .img-bg { transform: scale(1.05); }
+    .portfolio-overlay {
+      position: absolute; inset: 0; background: rgba(10,10,10,.5);
+      display: flex; align-items: center; justify-content: center;
+      opacity: 0; transition: opacity .3s;
+    }
+    .portfolio-card:hover .portfolio-overlay { opacity: 1; }
+    .portfolio-tag {
+      font-size: .65rem; letter-spacing: .15em; text-transform: uppercase;
+      padding: .35rem .8rem; background: var(--gold); color: var(--black); border-radius: 2px;
+    }
+    .portfolio-body { padding: 1.5rem; }
+    .portfolio-cat {
+      font-size: .65rem; letter-spacing: .15em; text-transform: uppercase;
+      color: var(--gold); margin-bottom: .5rem;
+    }
+    .portfolio-title { font-family: 'DM Serif Display', serif; font-size: 1.1rem; color: var(--offwhite); }
+    .portfolio-desc { font-size: .82rem; color: var(--muted); margin-top: .5rem; line-height: 1.6; }
+
+    /* ── SERVICES ── */
+    #services { background: var(--black); }
+    .services-list { margin-top: 3.5rem; }
+    .service-item {
+      display: grid; grid-template-columns: 3rem 1fr auto;
+      align-items: center; gap: 2rem;
+      padding: 1.8rem 0;
+      border-bottom: 1px solid rgba(201,168,76,.1);
+      cursor: default;
+      transition: padding-left .25s;
+    }
+    .service-item:hover { padding-left: 1rem; }
+    .service-item:hover .svc-num { color: var(--gold); }
+    .svc-num {
+      font-family: 'Bebas Neue', sans-serif; font-size: 1.3rem;
+      color: var(--muted); transition: color .25s;
+    }
+    .svc-title { font-family: 'DM Serif Display', serif; font-size: clamp(1.1rem, 2.5vw, 1.4rem); color: var(--offwhite); }
+    .svc-desc { font-size: .82rem; color: var(--muted); margin-top: .3rem; }
+    .svc-arrow { color: var(--gold); opacity: 0; transform: translateX(-8px); transition: opacity .25s, transform .25s; }
+    .service-item:hover .svc-arrow { opacity: 1; transform: translateX(0); }
+
+    /* ── CONTACT ── */
+    #contact {
+      background: var(--mid);
+      text-align: center;
+    }
+    .contact-inner { max-width: 600px; margin: 0 auto; }
+    .contact-big {
+      font-family: 'Bebas Neue', sans-serif;
+      font-size: clamp(3rem, 10vw, 7rem);
+      line-height: .9; color: var(--offwhite);
+      margin: 1.5rem 0;
+    }
+    .contact-big span { color: var(--gold); }
+    .contact-email {
+      display: inline-block;
+      font-family: 'DM Serif Display', serif; font-style: italic;
+      font-size: clamp(1rem, 2.5vw, 1.3rem);
+      color: var(--gold); margin: 1.5rem 0 2.5rem;
+      text-decoration: none; border-bottom: 1px solid rgba(201,168,76,.3);
+      transition: border-color .25s;
+    }
+    .contact-email:hover { border-color: var(--gold); }
+    .social-links {
+      display: flex; justify-content: center; gap: 1.5rem; flex-wrap: wrap;
+    }
+    .social-link {
+      font-size: .72rem; letter-spacing: .15em; text-transform: uppercase;
+      color: var(--cream); text-decoration: none;
+      padding: .55rem 1.3rem; border: 1px solid rgba(201,168,76,.25);
+      border-radius: 2px; transition: color .25s, border-color .25s, background .25s;
+    }
+    .social-link:hover { color: var(--gold); border-color: var(--gold); background: rgba(201,168,76,.06); }
+
+    /* ── FOOTER ── */
+    footer {
+      padding: 2rem 4vw;
+      display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 1rem;
+      border-top: 1px solid rgba(201,168,76,.1);
+      background: var(--black);
+    }
+    footer .foot-logo { font-family: 'Bebas Neue', sans-serif; font-size: 1.1rem; color: var(--gold); letter-spacing: .12em; }
+    footer p { font-size: .7rem; color: var(--muted); letter-spacing: .08em; }
+
+    /* ── ANIMATIONS ── */
+    @keyframes fadeUp {
+      from { opacity: 0; transform: translateY(28px); }
+      to   { opacity: 1; transform: translateY(0); }
+    }
+    @keyframes bounce {
+      0%, 100% { transform: translateX(-50%) translateY(0); }
+      50%       { transform: translateX(-50%) translateY(8px); }
+    }
+
+    .reveal {
+      opacity: 0; transform: translateY(40px);
+      transition: opacity .7s ease, transform .7s ease;
+    }
+    .reveal.visible { opacity: 1; transform: translateY(0); }
+    .reveal-delay-1 { transition-delay: .1s; }
+    .reveal-delay-2 { transition-delay: .2s; }
+    .reveal-delay-3 { transition-delay: .3s; }
+    .reveal-delay-4 { transition-delay: .4s; }
+
+    /* ── RESPONSIVE ── */
+    @media (max-width: 768px) {
+      .nav-links { display: none; position: fixed; inset: 0; background: var(--black); flex-direction: column; align-items: center; justify-content: center; gap: 2.5rem; z-index: 400; }
+      .nav-links.open { display: flex; }
+      .nav-hamburger { display: flex; z-index: 500; }
+      .about-grid { grid-template-columns: 1fr; }
+      .service-item { grid-template-columns: 2.5rem 1fr; }
+      .svc-arrow { display: none; }
+    }
+
+    @media (max-width: 480px) {
+      .about-stats { grid-template-columns: 1fr 1fr; }
+    }
+  </style>
+</head>
+<body>
+
+  <div class="cursor" id="cursor"></div>
+  <div class="cursor-ring" id="cursorRing"></div>
+
+  <!-- NAV -->
+  <nav>
+    <a href="#hero" class="nav-logo">LanzSocial</a>
+    <ul class="nav-links" id="navLinks">
+      <li><a href="#about">About</a></li>
+      <li><a href="#skills">Skills</a></li>
+      <li><a href="#portfolio">Work</a></li>
+      <li><a href="#services">Services</a></li>
+      <li><a href="#contact">Contact</a></li>
+    </ul>
+    <div class="nav-hamburger" id="hamburger" aria-label="Menu">
+      <span></span><span></span><span></span>
+    </div>
+  </nav>
+
+  <!-- HERO -->
+  <section id="hero">
+    <div class="hero-bg"></div>
+    <div class="hero-grid-lines"></div>
+    <div class="hero-content">
+      <div class="hero-eyebrow">Creative &amp; Tech Portfolio</div>
+      <h1 class="hero-name">Lanz<span>Social</span></h1>
+      <p class="hero-tagline">Where code meets creativity — crafting digital experiences that move.</p>
+      <div class="hero-tags">
+        <span class="tag">Web Development</span>
+        <span class="tag">Digital Editing</span>
+        <span class="tag">Video Production</span>
+        <span class="tag">Photo Editing</span>
+        <span class="tag">Digital Marketing</span>
+      </div>
+      <a href="#portfolio" class="hero-cta">
+        View My Work
+        <svg width="14" height="14" viewBox="0 0 14 14" fill="none"><path d="M1 7h12M7 1l6 6-6 6" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/></svg>
+      </a>
+    </div>
+    <div class="hero-scroll">Scroll</div>
+  </section>
+
+  <!-- ABOUT -->
+  <section id="about">
+    <div class="section-label reveal">About</div>
+    <h2 class="section-title reveal reveal-delay-1">A <em>multidisciplinary</em><br>digital creative</h2>
+    <div class="about-grid">
+      <div class="about-text reveal reveal-delay-2">
+        <p>I'm LanzSocial — a digital creator blending sharp programming skills with a refined eye for design, video, and marketing strategy. Whether it's writing clean code, cutting compelling content, or building brand presence online, I bring precision and passion to every project.</p>
+        <p>Based in the Philippines, I work with clients globally — from startups hungry for an identity to established brands ready to elevate their digital footprint.</p>
+        <p>My approach is simple: understand the story, then build the tools that tell it best.</p>
+      </div>
+      <div class="about-stats reveal reveal-delay-3">
+        <div class="stat-box">
+          <div class="stat-num">3+</div>
+          <div class="stat-label">Years Experience</div>
+        </div>
+        <div class="stat-box">
+          <div class="stat-num">50+</div>
+          <div class="stat-label">Projects Delivered</div>
+        </div>
+        <div class="stat-box">
+          <div class="stat-num">100%</div>
+          <div class="stat-label">Client Satisfaction</div>
+        </div>
+        <div class="stat-box">
+          <div class="stat-num">3</div>
+          <div class="stat-label">Core Disciplines</div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- SKILLS -->
+  <section id="skills">
+    <div class="section-label reveal">Skills</div>
+    <h2 class="section-title reveal reveal-delay-1">What I do <em>best</em></h2>
+    <p class="section-sub reveal reveal-delay-2">A blend of technical precision and creative vision — built for the modern digital landscape.</p>
+
+    <div class="skills-grid">
+
+      <div class="skill-card reveal reveal-delay-1">
+        <div class="skill-icon">&#60;/&#62;</div>
+        <div class="skill-name">Programming & Dev</div>
+        <div class="skill-desc">Building fast, accessible, and beautiful web experiences from the ground up — responsive, clean, and purposeful.</div>
+        <div class="skill-items">
+          <span class="skill-item">HTML / CSS</span>
+          <span class="skill-item">JavaScript</span>
+          <span class="skill-item">React</span>
+          <span class="skill-item">Python</span>
+          <span class="skill-item">Git</span>
+          <span class="skill-item">REST APIs</span>
+        </div>
+      </div>
+
+      <div class="skill-card reveal reveal-delay-2">
+        <div class="skill-icon">&#9654;</div>
+        <div class="skill-name">Digital Editing</div>
+        <div class="skill-desc">Crafting visuals and videos that stop the scroll — from cinematic edits to polished photo retouching and brand graphics.</div>
+        <div class="skill-items">
+          <span class="skill-item">Premiere Pro</span>
+          <span class="skill-item">After Effects</span>
+          <span class="skill-item">Photoshop</span>
+          <span class="skill-item">Lightroom</span>
+          <span class="skill-item">Canva Pro</span>
+          <span class="skill-item">CapCut</span>
+        </div>
+      </div>
+
+      <div class="skill-card reveal reveal-delay-3">
+        <div class="skill-icon">&#128200;</div>
+        <div class="skill-name">Digital Marketing</div>
+        <div class="skill-desc">Growing brands online with data-driven strategies — from social content calendars to SEO and paid campaigns.</div>
+        <div class="skill-items">
+          <span class="skill-item">Social Media</span>
+          <span class="skill-item">SEO / SEM</span>
+          <span class="skill-item">Meta Ads</span>
+          <span class="skill-item">Content Strategy</span>
+          <span class="skill-item">Analytics</span>
+          <span class="skill-item">Email Marketing</span>
+        </div>
+      </div>
+
+    </div>
+
+    <!-- Proficiency Bars -->
+    <div class="bar-skills" style="margin-top:4rem;">
+      <div class="section-label reveal" style="margin-bottom:2rem;">Proficiency</div>
+      <div class="bar-row reveal reveal-delay-1">
+        <div class="bar-label"><span>Web Development</span><span>88%</span></div>
+        <div class="bar-track"><div class="bar-fill" data-width="88"></div></div>
+      </div>
+      <div class="bar-row reveal reveal-delay-2">
+        <div class="bar-label"><span>Video Editing</span><span>92%</span></div>
+        <div class="bar-track"><div class="bar-fill" data-width="92"></div></div>
+      </div>
+      <div class="bar-row reveal reveal-delay-3">
+        <div class="bar-label"><span>Photo Editing</span><span>90%</span></div>
+        <div class="bar-track"><div class="bar-fill" data-width="90"></div></div>
+      </div>
+      <div class="bar-row reveal reveal-delay-4">
+        <div class="bar-label"><span>Digital Marketing</span><span>85%</span></div>
+        <div class="bar-track"><div class="bar-fill" data-width="85"></div></div>
+      </div>
+    </div>
+  </section>
+
+  <!-- PORTFOLIO -->
+  <section id="portfolio">
+    <div class="section-label reveal">Portfolio</div>
+    <h2 class="section-title reveal reveal-delay-1">Selected <em>work</em></h2>
+    <p class="section-sub reveal reveal-delay-2">A curated selection of projects across dev, content, and brand strategy.</p>
+
+    <div class="portfolio-grid">
+
+      <div class="portfolio-card reveal reveal-delay-1">
+        <div class="portfolio-img">
+          <div class="img-bg" style="background: linear-gradient(135deg, #1a1200 0%, #2d1f00 40%, #c9a84c22 100%); width:100%; height:100%;"></div>
+          <div style="position:absolute;font-family:'Bebas Neue',sans-serif;font-size:4rem;color:rgba(201,168,76,.18);letter-spacing:.1em;">&#60;WEB&#62;</div>
+          <div class="portfolio-overlay"><span class="portfolio-tag">View Project</span></div>
+        </div>
+        <div class="portfolio-body">
+          <div class="portfolio-cat">Web Development</div>
+          <div class="portfolio-title">Brand Website Redesign</div>
+          <div class="portfolio-desc">Full responsive redesign for a local lifestyle brand — React front-end, CMS integration, 40% traffic increase post-launch.</div>
+        </div>
+      </div>
+
+      <div class="portfolio-card reveal reveal-delay-2">
+        <div class="portfolio-img">
+          <div class="img-bg" style="background: linear-gradient(135deg, #0d0a00 0%, #1a1200 40%, #b54a2a22 100%); width:100%; height:100%;"></div>
+          <div style="position:absolute;font-family:'Bebas Neue',sans-serif;font-size:4rem;color:rgba(181,74,42,.2);letter-spacing:.05em;">&#9654; EDIT</div>
+          <div class="portfolio-overlay"><span class="portfolio-tag">View Project</span></div>
+        </div>
+        <div class="portfolio-body">
+          <div class="portfolio-cat">Video Editing</div>
+          <div class="portfolio-title">Social Media Reel Series</div>
+          <div class="portfolio-desc">12-part short-form video series for an F&B brand — scripted, shot, edited, and distributed across IG & TikTok.</div>
+        </div>
+      </div>
+
+      <div class="portfolio-card reveal reveal-delay-3">
+        <div class="portfolio-img">
+          <div class="img-bg" style="background: linear-gradient(135deg, #080a0d 0%, #0f1520 40%, #4a6c8022 100%); width:100%; height:100%;"></div>
+          <div style="position:absolute;font-family:'Bebas Neue',sans-serif;font-size:4rem;color:rgba(74,108,128,.25);letter-spacing:.05em;">&#128200; GROWTH</div>
+          <div class="portfolio-overlay"><span class="portfolio-tag">View Project</span></div>
+        </div>
+        <div class="portfolio-body">
+          <div class="portfolio-cat">Digital Marketing</div>
+          <div class="portfolio-title">E-Commerce Growth Campaign</div>
+          <div class="portfolio-desc">Integrated Meta Ads + organic content strategy that doubled online store revenue in 90 days.</div>
+        </div>
+      </div>
+
+      <div class="portfolio-card reveal reveal-delay-1">
+        <div class="portfolio-img">
+          <div class="img-bg" style="background: linear-gradient(135deg, #0a0800 0%, #1c1600 40%, #c9a84c18 100%); width:100%; height:100%;"></div>
+          <div style="position:absolute;font-family:'Bebas Neue',sans-serif;font-size:4rem;color:rgba(201,168,76,.15);letter-spacing:.05em;">&#9728; PHOTO</div>
+          <div class="portfolio-overlay"><span class="portfolio-tag">View Project</span></div>
+        </div>
+        <div class="portfolio-body">
+          <div class="portfolio-cat">Photo Editing</div>
+          <div class="portfolio-title">Product Photography Edit Pack</div>
+          <div class="portfolio-desc">60+ product images for an e-commerce store — retouching, color grading, and background removal in Photoshop & Lightroom.</div>
+        </div>
+      </div>
+
+      <div class="portfolio-card reveal reveal-delay-2">
+        <div class="portfolio-img">
+          <div class="img-bg" style="background: linear-gradient(135deg, #0a050a 0%, #180e18 40%, #9a2a9a18 100%); width:100%; height:100%;"></div>
+          <div style="position:absolute;font-family:'Bebas Neue',sans-serif;font-size:4rem;color:rgba(154,42,154,.18);letter-spacing:.05em;">&#128220; BRAND</div>
+          <div class="portfolio-overlay"><span class="portfolio-tag">View Project</span></div>
+        </div>
+        <div class="portfolio-body">
+          <div class="portfolio-cat">Branding & Design</div>
+          <div class="portfolio-title">Complete Brand Identity Kit</div>
+          <div class="portfolio-desc">Logo, color palette, typography system, social templates, and brand guidelines for a startup wellness brand.</div>
+        </div>
+      </div>
+
+      <div class="portfolio-card reveal reveal-delay-3">
+        <div class="portfolio-img">
+          <div class="img-bg" style="background: linear-gradient(135deg, #020a08 0%, #071812 40%, #2a8a5a18 100%); width:100%; height:100%;"></div>
+          <div style="position:absolute;font-family:'Bebas Neue',sans-serif;font-size:4rem;color:rgba(42,138,90,.18);letter-spacing:.05em;">&#128241; SOCIAL</div>
+          <div class="portfolio-overlay"><span class="portfolio-tag">View Project</span></div>
+        </div>
+        <div class="portfolio-body">
+          <div class="portfolio-cat">Content Strategy</div>
+          <div class="portfolio-title">Social Media Management</div>
+          <div class="portfolio-desc">3-month social media retainer — full content calendar, copywriting, graphic creation, and monthly analytics reporting.</div>
+        </div>
+      </div>
+
+    </div>
+  </section>
+
+  <!-- SERVICES -->
+  <section id="services">
+    <div class="section-label reveal">Services</div>
+    <h2 class="section-title reveal reveal-delay-1">How I can <em>help you</em></h2>
+    <div class="services-list">
+      <div class="service-item reveal">
+        <span class="svc-num">01</span>
+        <div>
+          <div class="svc-title">Web Design & Development</div>
+          <div class="svc-desc">Responsive websites and web apps built with clean, maintainable code.</div>
+        </div>
+        <span class="svc-arrow">&#8594;</span>
+      </div>
+      <div class="service-item reveal reveal-delay-1">
+        <span class="svc-num">02</span>
+        <div>
+          <div class="svc-title">Video Editing & Production</div>
+          <div class="svc-desc">Short-form reels, promotional videos, cinematic brand films, and motion graphics.</div>
+        </div>
+        <span class="svc-arrow">&#8594;</span>
+      </div>
+      <div class="service-item reveal reveal-delay-2">
+        <span class="svc-num">03</span>
+        <div>
+          <div class="svc-title">Photo Editing & Retouching</div>
+          <div class="svc-desc">Product photography, portrait retouching, color grading, and creative compositing.</div>
+        </div>
+        <span class="svc-arrow">&#8594;</span>
+      </div>
+      <div class="service-item reveal reveal-delay-3">
+        <span class="svc-num">04</span>
+        <div>
+          <div class="svc-title">Digital Marketing Strategy</div>
+          <div class="svc-desc">SEO, paid ads, social media management, content strategy, and analytics reporting.</div>
+        </div>
+        <span class="svc-arrow">&#8594;</span>
+      </div>
+      <div class="service-item reveal reveal-delay-4">
+        <span class="svc-num">05</span>
+        <div>
+          <div class="svc-title">Brand Identity & Graphic Design</div>
+          <div class="svc-desc">Logos, brand guidelines, social templates, pitch decks, and full visual systems.</div>
+        </div>
+        <span class="svc-arrow">&#8594;</span>
+      </div>
+    </div>
+  </section>
+
+  <!-- CONTACT -->
+  <section id="contact">
+    <div class="contact-inner">
+      <div class="section-label reveal" style="justify-content:center;">Contact</div>
+      <div class="contact-big reveal reveal-delay-1">Let's<br><span>Work</span><br>Together</div>
+      <a href="mailto:hello@lanzsocial.com" class="contact-email reveal reveal-delay-2">hello@lanzsocial.com</a>
+      <div class="social-links reveal reveal-delay-3">
+        <a href="#" class="social-link">Instagram</a>
+        <a href="#" class="social-link">Facebook</a>
+        <a href="#" class="social-link">LinkedIn</a>
+        <a href="#" class="social-link">GitHub</a>
+        <a href="#" class="social-link">TikTok</a>
+      </div>
+    </div>
+  </section>
+
+  <!-- FOOTER -->
+  <footer>
+    <span class="foot-logo">LanzSocial</span>
+    <p>&copy; 2026 LanzSocial. All rights reserved.</p>
+    <p>Crafted with precision &amp; passion.</p>
+  </footer>
+
+  <script>
+    // ── CURSOR ──
+    const cursor = document.getElementById('cursor');
+    const ring = document.getElementById('cursorRing');
+    document.addEventListener('mousemove', e => {
+      cursor.style.left = e.clientX + 'px';
+      cursor.style.top  = e.clientY + 'px';
+      setTimeout(() => {
+        ring.style.left = e.clientX + 'px';
+        ring.style.top  = e.clientY + 'px';
+      }, 60);
+    });
+    document.querySelectorAll('a,button,.skill-card,.portfolio-card,.service-item').forEach(el => {
+      el.addEventListener('mouseenter', () => {
+        cursor.style.width = '20px'; cursor.style.height = '20px';
+        ring.style.width = '50px'; ring.style.height = '50px';
+      });
+      el.addEventListener('mouseleave', () => {
+        cursor.style.width = '12px'; cursor.style.height = '12px';
+        ring.style.width = '36px'; ring.style.height = '36px';
+      });
+    });
+
+    // ── HAMBURGER ──
+    const ham = document.getElementById('hamburger');
+    const nav = document.getElementById('navLinks');
+    ham.addEventListener('click', () => {
+      nav.classList.toggle('open');
+      ham.querySelectorAll('span')[0].style.transform = nav.classList.contains('open') ? 'rotate(45deg) translate(4px,5px)' : '';
+      ham.querySelectorAll('span')[1].style.opacity = nav.classList.contains('open') ? '0' : '1';
+      ham.querySelectorAll('span')[2].style.transform = nav.classList.contains('open') ? 'rotate(-45deg) translate(4px,-5px)' : '';
+    });
+    nav.querySelectorAll('a').forEach(a => a.addEventListener('click', () => {
+      nav.classList.remove('open');
+      ham.querySelectorAll('span').forEach(s => { s.style.transform = ''; s.style.opacity = '1'; });
+    }));
+
+    // ── SCROLL REVEAL ──
+    const revealEls = document.querySelectorAll('.reveal');
+    const observer = new IntersectionObserver(entries => {
+      entries.forEach(e => { if (e.isIntersecting) { e.target.classList.add('visible'); } });
+    }, { threshold: 0.12 });
+    revealEls.forEach(el => observer.observe(el));
+
+    // ── SKILL BARS ──
+    const barObserver = new IntersectionObserver(entries => {
+      entries.forEach(entry => {
+        if (entry.isIntersecting) {
+          entry.target.querySelectorAll('.bar-fill').forEach(bar => {
+            bar.style.width = bar.dataset.width + '%';
+          });
+          barObserver.unobserve(entry.target);
+        }
+      });
+    }, { threshold: 0.3 });
+    document.querySelectorAll('.bar-skills').forEach(el => barObserver.observe(el));
+  </script>
+</body>
+</html>
