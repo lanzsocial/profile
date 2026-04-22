@@ -1,0 +1,6 @@
+create a html responsive high class web page where you can see the following, other things that are not included in the following list dont include
+1. include my brand name Lanzsocial
+2. please put in my description my skills that i am programmer, digital marketer and editor (video and photo)
+3. my projects with clickable design for each project
+4. rates different rate depends on the project make it 3
+5. footer my social medias where they can follow me
