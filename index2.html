@@ -1,0 +1,758 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Lanzsocial</title>
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@300;400;600&family=DM+Mono:wght@300;400&display=swap" rel="stylesheet">
+
+<style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    :root {
+        --gold: #c9a84c;
+        --gold-light: #e8c96e;
+        --gold-dim: rgba(201, 168, 76, 0.15);
+        --bg: #08080a;
+        --bg-card: #0e0e12;
+        --bg-card-hover: #131318;
+        --border: rgba(201, 168, 76, 0.12);
+        --border-hover: rgba(201, 168, 76, 0.5);
+        --text: #ddd8cc;
+        --text-muted: #6b6760;
+        --text-dim: #9a9590;
+    }
+
+    html { scroll-behavior: smooth; }
+
+    body {
+        font-family: 'DM Mono', monospace;
+        background: var(--bg);
+        color: var(--text);
+        min-height: 100vh;
+        overflow-x: hidden;
+    }
+
+    /* ── NOISE OVERLAY ── */
+    body::before {
+        content: '';
+        position: fixed;
+        inset: 0;
+        background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noise)' opacity='0.04'/%3E%3C/svg%3E");
+        pointer-events: none;
+        z-index: 0;
+        opacity: 0.45;
+    }
+
+    /* ── HEADER ── */
+    header {
+        position: relative;
+        text-align: center;
+        padding: 110px 20px 90px;
+        background: linear-gradient(180deg, #0c0c10 0%, var(--bg) 100%);
+        border-bottom: 1px solid var(--border);
+        overflow: hidden;
+    }
+
+    /* radial glow behind headline */
+    header::after {
+        content: '';
+        position: absolute;
+        top: 0; left: 50%;
+        transform: translateX(-50%);
+        width: 600px; height: 300px;
+        background: radial-gradient(ellipse at 50% 0%, rgba(201,168,76,0.1) 0%, transparent 70%);
+        pointer-events: none;
+    }
+
+    /* decorative horizontal rule lines */
+    .header-rule {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        gap: 16px;
+        margin-bottom: 36px;
+        opacity: 0;
+        animation: fadeUp 0.8s ease forwards 0.1s;
+    }
+    .header-rule span { display: block; height: 1px; width: 60px; background: var(--gold); opacity: 0.4; }
+    .header-rule em { font-style: normal; font-size: 0.65rem; letter-spacing: 4px; color: var(--gold); text-transform: uppercase; }
+
+    header h1 {
+        font-family: 'Cormorant Garamond', serif;
+        font-size: clamp(3rem, 8vw, 5.5rem);
+        font-weight: 300;
+        letter-spacing: 10px;
+        color: var(--gold-light);
+        line-height: 1;
+        margin-bottom: 18px;
+        opacity: 0;
+        animation: fadeUp 0.9s ease forwards 0.25s;
+    }
+
+    header p {
+        font-size: 0.68rem;
+        letter-spacing: 5px;
+        text-transform: uppercase;
+        color: var(--text-muted);
+        margin-bottom: 30px;
+        opacity: 0;
+        animation: fadeUp 0.9s ease forwards 0.4s;
+    }
+
+    .tagline {
+        max-width: 680px;
+        margin: 0 auto;
+        font-family: 'Cormorant Garamond', serif;
+        font-size: 1.3rem;
+        font-weight: 300;
+        color: #a09a90;
+        line-height: 1.8;
+        opacity: 0;
+        animation: fadeUp 0.9s ease forwards 0.55s;
+    }
+
+    /* ── SECTIONS ── */
+    section {
+        padding: 80px 20px;
+        max-width: 1100px;
+        margin: auto;
+        position: relative;
+        z-index: 1;
+    }
+
+    h2 {
+        text-align: center;
+        margin-bottom: 50px;
+        font-family: 'Cormorant Garamond', serif;
+        font-weight: 400;
+        font-size: 1.8rem;
+        color: var(--gold-light);
+        letter-spacing: 6px;
+        text-transform: uppercase;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        gap: 20px;
+    }
+
+    h2::before, h2::after {
+        content: '';
+        display: block;
+        height: 1px;
+        width: 80px;
+        background: linear-gradient(90deg, transparent, var(--gold));
+        opacity: 0.4;
+    }
+    h2::after { transform: scaleX(-1); }
+
+    /* ── PROJECT CARDS ── */
+    .projects {
+        display: grid;
+        gap: 20px;
+        grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+    }
+
+    .card {
+        background: var(--bg-card);
+        border-radius: 4px;
+        text-align: center;
+        transition: transform 0.35s ease, border-color 0.35s ease, box-shadow 0.35s ease;
+        cursor: pointer;
+        border: 1px solid var(--border);
+        position: relative;
+        overflow: hidden;
+        font-family: 'DM Mono', monospace;
+        font-size: 0.8rem;
+        letter-spacing: 2px;
+        text-transform: uppercase;
+        color: var(--text-dim);
+        text-decoration: none;
+        display: block;
+    }
+
+    /* shimmer line at top of card */
+    .card::before {
+        content: '';
+        position: absolute;
+        top: 0; left: 0; right: 0;
+        height: 1px;
+        background: linear-gradient(90deg, transparent, var(--gold), transparent);
+        opacity: 0;
+        transition: opacity 0.35s ease;
+        z-index: 2;
+    }
+
+    .card:hover {
+        transform: translateY(-6px);
+        border-color: var(--border-hover);
+        box-shadow: 0 20px 40px rgba(0,0,0,0.5), 0 0 0 1px rgba(201,168,76,0.08);
+    }
+
+    .card:hover::before { opacity: 1; }
+
+    /* ── PROJECT IMAGE AREA ── */
+    .card-img-wrap {
+        position: relative;
+        width: 100%;
+        aspect-ratio: 16/9;
+        overflow: hidden;
+        background: #0c0c10;
+    }
+
+    .card-img-wrap img {
+        width: 100%;
+        height: 100%;
+        object-fit: cover;
+        display: block;
+        transition: transform 0.5s ease, opacity 0.4s ease;
+        opacity: 0.85;
+    }
+
+    .card:hover .card-img-wrap img {
+        transform: scale(1.04);
+        opacity: 1;
+    }
+
+    /* placeholder when no image set */
+    .card-img-wrap .img-placeholder {
+        position: absolute;
+        inset: 0;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+        gap: 10px;
+        background: #0c0c10;
+    }
+
+    .card-img-wrap .img-placeholder svg {
+        opacity: 0.2;
+    }
+
+    .card-img-wrap .img-placeholder span {
+        font-size: 0.55rem;
+        letter-spacing: 3px;
+        color: var(--text-muted);
+        text-transform: uppercase;
+    }
+
+    /* overlay on hover with "view project" */
+    .card-img-wrap .overlay {
+        position: absolute;
+        inset: 0;
+        background: rgba(8,8,10,0.55);
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        opacity: 0;
+        transition: opacity 0.35s ease;
+        z-index: 1;
+    }
+
+    .card-img-wrap .overlay span {
+        font-size: 0.6rem;
+        letter-spacing: 5px;
+        text-transform: uppercase;
+        color: var(--gold-light);
+        border: 1px solid rgba(201,168,76,0.4);
+        padding: 8px 20px;
+        border-radius: 2px;
+        backdrop-filter: blur(4px);
+    }
+
+    .card:hover .overlay { opacity: 1; }
+
+    /* ── CARD FOOTER (title + edit button) ── */
+    .card-footer {
+        padding: 18px 20px;
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        border-top: 1px solid var(--border);
+        gap: 10px;
+    }
+
+    .card-title {
+        font-size: 0.7rem;
+        letter-spacing: 2px;
+        color: var(--text-dim);
+        text-transform: uppercase;
+        transition: color 0.25s;
+        text-align: left;
+        flex: 1;
+        white-space: nowrap;
+        overflow: hidden;
+        text-overflow: ellipsis;
+    }
+
+    .card:hover .card-title { color: var(--gold-light); }
+
+    .card-num {
+        font-size: 0.55rem;
+        letter-spacing: 2px;
+        color: var(--gold);
+        opacity: 0.4;
+        flex-shrink: 0;
+    }
+
+    /* ── EDIT CONTROLS (shown when editing) ── */
+    .edit-controls {
+        display: none;
+        padding: 14px 20px;
+        background: #0a0a0e;
+        border-top: 1px solid var(--border);
+        gap: 8px;
+        flex-direction: column;
+    }
+
+    .edit-controls.open { display: flex; }
+
+    .edit-controls input[type="text"],
+    .edit-controls input[type="url"] {
+        background: var(--bg);
+        border: 1px solid var(--border);
+        border-radius: 2px;
+        color: var(--text);
+        font-family: 'DM Mono', monospace;
+        font-size: 0.65rem;
+        letter-spacing: 1px;
+        padding: 8px 12px;
+        width: 100%;
+        outline: none;
+        transition: border-color 0.2s;
+    }
+
+    .edit-controls input:focus { border-color: var(--gold); }
+    .edit-controls input::placeholder { color: var(--text-muted); }
+
+    .edit-row {
+        display: flex;
+        gap: 8px;
+        align-items: center;
+    }
+
+    .btn-img-upload {
+        background: var(--gold-dim);
+        border: 1px solid var(--border-hover);
+        border-radius: 2px;
+        color: var(--gold);
+        font-family: 'DM Mono', monospace;
+        font-size: 0.6rem;
+        letter-spacing: 2px;
+        text-transform: uppercase;
+        padding: 8px 14px;
+        cursor: pointer;
+        white-space: nowrap;
+        transition: background 0.2s;
+        flex-shrink: 0;
+    }
+
+    .btn-img-upload:hover { background: rgba(201,168,76,0.25); }
+
+    .btn-edit-toggle {
+        background: none;
+        border: 1px solid var(--border);
+        border-radius: 2px;
+        color: var(--text-muted);
+        font-family: 'DM Mono', monospace;
+        font-size: 0.55rem;
+        letter-spacing: 2px;
+        text-transform: uppercase;
+        padding: 4px 10px;
+        cursor: pointer;
+        transition: color 0.2s, border-color 0.2s;
+        flex-shrink: 0;
+    }
+
+    .btn-edit-toggle:hover { color: var(--gold); border-color: var(--gold); }
+
+    /* ── RATES ── */
+    .rates {
+        display: grid;
+        gap: 20px;
+        grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+    }
+
+    .rates .card {
+        cursor: default;
+        padding: 50px 30px;
+    }
+
+    .rates .card:hover {
+        transform: translateY(-4px);
+    }
+
+    .rates h3 {
+        font-family: 'DM Mono', monospace;
+        font-size: 0.65rem;
+        font-weight: 400;
+        letter-spacing: 5px;
+        text-transform: uppercase;
+        color: var(--text-muted);
+        margin-bottom: 20px;
+    }
+
+    .rates .price {
+        font-family: 'Cormorant Garamond', serif;
+        font-size: 3.5rem;
+        font-weight: 300;
+        color: var(--gold-light);
+        line-height: 1;
+        margin-bottom: 8px;
+    }
+
+    .rates .price sup {
+        font-size: 1.2rem;
+        vertical-align: super;
+        color: var(--gold);
+        opacity: 0.7;
+    }
+
+    .rates .tier-tag {
+        display: inline-block;
+        margin-top: 18px;
+        font-size: 0.6rem;
+        letter-spacing: 3px;
+        text-transform: uppercase;
+        color: var(--gold);
+        opacity: 0.5;
+        border: 1px solid currentColor;
+        padding: 3px 10px;
+        border-radius: 2px;
+    }
+
+    .rates .features {
+        list-style: none;
+        margin-top: 28px;
+        padding-top: 24px;
+        border-top: 1px solid var(--border);
+        text-align: left;
+        display: flex;
+        flex-direction: column;
+        gap: 10px;
+    }
+
+    .rates .features li {
+        font-size: 0.65rem;
+        letter-spacing: 1px;
+        color: var(--text-dim);
+        display: flex;
+        align-items: center;
+        gap: 10px;
+        text-transform: none;
+    }
+
+    .rates .features li::before {
+        content: '';
+        display: inline-block;
+        width: 14px;
+        height: 1px;
+        background: var(--gold);
+        opacity: 0.4;
+        flex-shrink: 0;
+    }
+
+    .rates .features li.no {
+        opacity: 0.35;
+        text-decoration: line-through;
+        text-decoration-color: rgba(201,168,76,0.2);
+    }
+
+    /* highlight standard card */
+    .rates .card.featured {
+        border-color: rgba(201,168,76,0.3);
+        background: linear-gradient(160deg, #111115, #0e0e12);
+    }
+    .rates .card.featured::before { opacity: 0.6; }
+    .rates .card.featured .tier-tag { opacity: 1; }
+
+    /* ── FOOTER ── */
+    footer {
+        text-align: center;
+        padding: 50px 20px;
+        background: #060608;
+        border-top: 1px solid var(--border);
+        position: relative;
+        z-index: 1;
+    }
+
+    footer p {
+        font-size: 0.6rem;
+        letter-spacing: 5px;
+        text-transform: uppercase;
+        color: var(--text-muted);
+        margin-bottom: 20px;
+    }
+
+    .footer-links {
+        display: flex;
+        justify-content: center;
+        gap: 8px;
+        flex-wrap: wrap;
+    }
+
+    footer a {
+        color: var(--text-dim);
+        text-decoration: none;
+        font-size: 0.65rem;
+        letter-spacing: 3px;
+        text-transform: uppercase;
+        padding: 8px 18px;
+        border: 1px solid var(--border);
+        border-radius: 2px;
+        transition: color 0.25s, border-color 0.25s, background 0.25s;
+    }
+
+    footer a:hover {
+        color: var(--gold-light);
+        border-color: var(--border-hover);
+        background: var(--gold-dim);
+    }
+
+    footer .copyright {
+        margin-top: 30px;
+        font-size: 0.55rem;
+        letter-spacing: 2px;
+        color: #3a3833;
+    }
+
+    /* ── DIVIDER ── */
+    .divider {
+        width: 1px;
+        height: 60px;
+        background: linear-gradient(to bottom, transparent, var(--gold), transparent);
+        margin: 0 auto;
+        opacity: 0.3;
+    }
+
+    /* ── ANIMATIONS ── */
+    @keyframes fadeUp {
+        from { opacity: 0; transform: translateY(20px); }
+        to   { opacity: 1; transform: translateY(0); }
+    }
+
+    .reveal {
+        opacity: 0;
+        transform: translateY(24px);
+        transition: opacity 0.7s ease, transform 0.7s ease;
+    }
+    .reveal.visible {
+        opacity: 1;
+        transform: translateY(0);
+    }
+</style>
+</head>
+
+<body>
+
+<header>
+    <div class="header-rule">
+        <span></span>
+        <em>Portfolio</em>
+        <span></span>
+    </div>
+    <h1>Lanzsocial</h1>
+    <p>Programmer &nbsp;·&nbsp; Digital Marketer &nbsp;·&nbsp; Video &amp; Photo Editor</p>
+    <div class="tagline">
+        High-converting landing pages designed to capture attention, build trust, and drive results. <br>Flexible pricing tailored to your project — from lightweight static sites to premium branded solutions with full features and a custom domain.
+    </div>
+</header>
+
+<section>
+    <h2>Projects</h2>
+    <div class="projects">
+
+        <!-- Card 1 -->
+        <div class="project-wrap reveal">
+            <a class="card" href="fitness-coach.html" id="link-1" target="_blank">
+                <div class="card-img-wrap">
+                    <img id="img-1" src="https://raw.githubusercontent.com/lanzsocial/profile/refs/heads/main/fitness.PNG" alt="https://raw.githubusercontent.com/lanzsocial/profile/refs/heads/main/fitness.PNG">
+                    <div class="overlay"><span>View Project</span></div>
+                </div>
+                <div class="card-footer">
+                    <span class="card-title" id="title-1">ApexFit - Fitness</span>
+                    <span class="card-num">01</span>
+                </div>
+            </a>
+        </div>
+
+	<!-- Card 2 -->
+        <div class="project-wrap reveal">
+            <a class="card" href="real-estate.html" id="link-2" target="_blank">
+                <div class="card-img-wrap">
+                    <img id="img-2" src="https://raw.githubusercontent.com/lanzsocial/profile/refs/heads/main/realestate.PNG" alt="https://raw.githubusercontent.com/lanzsocial/profile/refs/heads/main/realestate.PNG">
+                    <div class="overlay"><span>View Project</span></div>
+                </div>
+                <div class="card-footer">
+                    <span class="card-title" id="title-2">Harlow Properties - Real Estate</span>
+                    <span class="card-num">02</span>
+                </div>
+            </a>
+        </div>
+
+        <!-- Card 3 -->
+        <div class="project-wrap reveal">
+            <a class="card" href="cleaning-services.html" id="link-3" target="_blank">
+                <div class="card-img-wrap">
+                    <img id="img-3" src="https://raw.githubusercontent.com/lanzsocial/profile/refs/heads/main/cleaningservices.PNG" alt="https://raw.githubusercontent.com/lanzsocial/profile/refs/heads/main/cleaningservices.PNG">
+                    <div class="overlay"><span>View Project</span></div>
+                </div>
+                <div class="card-footer">
+                    <span class="card-title" id="title-3">SparkleClean - Cleaning Services</span>
+                    <span class="card-num">03</span>
+                </div>
+            </a>
+        </div>
+
+	<!-- Card 4 -->
+        <div class="project-wrap reveal">
+            <a class="card" href="salon.html" id="link-4" target="_blank">
+                <div class="card-img-wrap">
+                    <img id="img-4" src="https://raw.githubusercontent.com/lanzsocial/profile/refs/heads/main/salon.PNG" alt="https://raw.githubusercontent.com/lanzsocial/profile/refs/heads/main/salon.PNG">
+                    <div class="overlay"><span>View Project</span></div>
+                </div>
+                <div class="card-footer">
+                    <span class="card-title" id="title-4">Lumiere - Salon</span>
+                    <span class="card-num">04</span>
+                </div>
+            </a>
+        </div>
+
+	<!-- Card 5 -->
+        <div class="project-wrap reveal">
+            <a class="card" href="accounting.html" id="link-5" target="_blank">
+                <div class="card-img-wrap">
+                    <img id="img-5" src="https://raw.githubusercontent.com/lanzsocial/profile/refs/heads/main/accounting.PNG" alt="https://raw.githubusercontent.com/lanzsocial/profile/refs/heads/main/accounting.PNG">
+                    <div class="overlay"><span>View Project</span></div>
+                </div>
+                <div class="card-footer">
+                    <span class="card-title" id="title-5">Meridian Advisory - Accounting Consultant</span>
+                    <span class="card-num">05</span>
+                </div>
+            </a>
+        </div>
+
+	<!-- Card 6 -->
+        <div class="project-wrap reveal">
+            <a class="card" href="digital-marketing.html" id="link-6" target="_blank">
+                <div class="card-img-wrap">
+                    <img id="img-6" src="https://raw.githubusercontent.com/lanzsocial/profile/refs/heads/main/digitalmarketing.PNG" alt="https://raw.githubusercontent.com/lanzsocial/profile/refs/heads/main/digitalmarketing.PNG">
+                    <div class="overlay"><span>View Project</span></div>
+                </div>
+                <div class="card-footer">
+                    <span class="card-title" id="title-6">Signal_Studio - Digital Marketing Consultant</span>
+                    <span class="card-num">06</span>
+                </div>
+            </a>
+        </div>
+
+
+
+
+
+
+    </div>
+</section>
+
+<div class="divider"></div>
+
+<section>
+    <h2>Rates</h2>
+    <div class="rates">
+        <div class="card reveal">
+            <h3>Basic</h3>
+            <div class="price"><sup>$</sup>25</div>
+            <span class="tier-tag">Starter</span>
+            <ul class="features">
+                <li>1 landing page</li>
+		<li>Mobile-responsive design</li>
+		<li>Basic layout</li>
+                <li class="no">No custom domain</li>
+                <li class="no">No custom email</li>
+            </ul>
+        </div>
+        <div class="card featured reveal" style="transition-delay:0.1s">
+            <h3>Standard</h3>
+            <div class="price"><sup>$</sup>50</div>
+            <span class="tier-tag">Popular</span>
+            <ul class="features">
+                <li>Up to 3 pages</li>
+		<li>Mobile-responsive design</li>
+		<li>Basic integrations (forms, buttons)</li>
+                <li>Custom domain</li>
+                <li class="no">No custom email</li>
+            </ul>
+        </div>
+        <div class="card reveal" style="transition-delay:0.2s">
+            <h3>Premium</h3>
+            <div class="price"><sup>$</sup>100</div>
+            <span class="tier-tag">Full-Feature</span>
+            <ul class="features">
+                <li>Up to 5 pages</li>
+		<li>Mobile-responsive design</li>
+                <li>Custom domain</li>
+                <li>Hosting included</li>
+                <li>Custom email</li>
+            </ul>
+        </div>
+    </div>
+</section>
+
+<footer>
+    <p>Contact Me</p>
+    <div class="footer-links">
+        <a href="https://www.facebook.com/lanzsocial">Facebook</a>
+        <a href="#">Upwork</a>
+    </div>
+    <p class="copyright">© 2026 Lanzsocial — All rights reserved</p>
+</footer>
+
+<script>
+    // Scroll reveal
+    const observer = new IntersectionObserver((entries) => {
+        entries.forEach(e => {
+            if (e.isIntersecting) {
+                e.target.classList.add('visible');
+                observer.unobserve(e.target);
+            }
+        });
+    }, { threshold: 0.15 });
+
+    document.querySelectorAll('.reveal').forEach(el => observer.observe(el));
+
+    // Toggle edit panel
+    function toggleEdit(id) {
+        const panel = document.getElementById('edit-' + id);
+        panel.classList.toggle('open');
+    }
+
+    // Update title
+    function updateTitle(id, val) {
+        document.getElementById('title-' + id).textContent = val || 'Project ' + id;
+    }
+
+    // Update link
+    function updateLink(id, val) {
+        const a = document.getElementById('link-' + id);
+        a.href = val || '#';
+    }
+
+    // Load image from file input
+    function loadImage(id, input) {
+        const file = input.files[0];
+        if (!file) return;
+        const reader = new FileReader();
+        reader.onload = function(e) {
+            const img = document.getElementById('img-' + id);
+            const placeholder = document.getElementById('placeholder-' + id);
+            img.src = e.target.result;
+            img.style.display = 'block';
+            placeholder.style.display = 'none';
+        };
+        reader.readAsDataURL(file);
+    }
+</script>
+
+</body>
+</html>
